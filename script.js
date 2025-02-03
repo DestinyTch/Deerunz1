@@ -88,65 +88,49 @@ const cards = document.querySelectorAll('.card');
 // Function to check if the user is online
 function checkConnection() {
     if (!navigator.onLine) {
-        // Store the current page URL in sessionStorage
         sessionStorage.setItem('lastPage', window.location.href);
-        // Redirect to a custom 'no internet' page
         window.location.href = 'no-internet.html';
     }
 }
 
-// Request permission for notifications on page load, only once
 function requestNotificationPermission() {
-    // Check if permission is "default"
     if (Notification.permission === "default") {
-        Notification.requestPermission().then(function(permission) {
-            if (permission === "granted") {
-                console.log("Notification permission granted");
-            } else {
-                console.log("Notification permission denied");
-            }
-        });
+        Notification.requestPermission(); // No need for .then() here, we handle it later
     }
 }
 
-// Event listener for when the user goes offline
-window.addEventListener('offline', function() {
-    checkConnection();
-});
+window.addEventListener('offline', checkConnection);
 
-// Event listener for when the user comes online
-window.addEventListener('online', function() {
-    // Check if there's a saved last page
+window.addEventListener('online', () => {
     const lastPage = sessionStorage.getItem('lastPage');
-    
-    // If we saved a page, show a notification and redirect
+
     if (lastPage) {
-        // Check if notifications are granted
+        // Check notification permission *when coming back online*
         if (Notification.permission === "granted") {
-            // Show a notification when the internet is back
-            const notification = new Notification("You are back online!", {
-                body: "Click here to go back to the page you were on.",
-                icon: "icon-url.png", // Optional: You can add an icon here
+            const notification = new Notification("You're back online!", {
+                body: "Click to return to where you were.",
+                // icon: "icon-url.png",  // Add your icon URL here if you have one
             });
 
-            // Redirect on notification click
-            notification.onclick = function() {
+            notification.onclick = () => {
                 window.location.href = lastPage;
+                sessionStorage.removeItem('lastPage'); // Clear *after* redirect
             };
-        } else {
-            // If permission isn't granted, just redirect immediately without notification
-            window.location.href = lastPage;
-        }
 
-        // Clear 'lastPage' from sessionStorage once the page is redirected
-        sessionStorage.removeItem('lastPage');
+            // Timeout redirect in case the user doesn't click the notification
+            setTimeout(() => {
+                window.location.href = lastPage;
+                sessionStorage.removeItem('lastPage'); // Clear *after* redirect
+            }, 5000); // Redirect after 5 seconds (adjust as needed)
+
+        } else {
+            // If notifications are denied, redirect immediately
+            window.location.href = lastPage;
+            sessionStorage.removeItem('lastPage'); // Clear *after* redirect
+        }
     }
 });
 
-// Request notification permission only once on page load
+// Request permission and check connection on load
 requestNotificationPermission();
-
-// Check the connection status immediately when the page loads
-if (!navigator.onLine) {
-    checkConnection();
-}
+checkConnection();
