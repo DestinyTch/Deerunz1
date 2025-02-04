@@ -449,6 +449,7 @@ h1{
 #deeruunz {
    display: inline-block;
    font-size: 44px;
+   text-align: center;
    color: #fff;
    animation: letterSpacing 15s linear infinite; /* Animate letter spacing */
 }
