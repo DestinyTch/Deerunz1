@@ -448,7 +448,8 @@ h1{
 }
 #deeruunz {
    display: inline-block;
-   font-size: 24px;
+   font-size: 44px;
+   text-align: center;
    color: #fff;
    animation: letterSpacing 15s linear infinite; /* Animate letter spacing */
 }
@@ -458,7 +459,7 @@ h1{
        letter-spacing: 0; /* Normal letter spacing */
    }
    50% {
-       letter-spacing: 10px; /* Increased letter spacing */
+       letter-spacing: 20px; /* Increased letter spacing */
    }
    100% {
        letter-spacing: 0; /* Back to normal letter spacing */
