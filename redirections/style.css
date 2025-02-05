@@ -11,7 +11,7 @@
 }
 
 body {
-   
+   user-select: none;
    color: #000000; /* Dark text color */
    background: linear-gradient(100deg, #9a56ff, #f7f7f7, #fcfbff); /* Gradient background */
    background-size: 400% 400%; /* For animation */
